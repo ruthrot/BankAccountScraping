@@ -34,9 +34,15 @@ namespace TestProject1
             password.FillAsync(PASSWORD).GetAwaiter().GetResult();
             Assert.AreEqual(password.InputValueAsync().Result, PASSWORD);
 
-            var button = form.Locator("BUTTON[type=\"submit\"]");
-            button.ClickAsync(new() { Force = true });
+            var button = page.Locator("text=כניסה לחשבון");
+             button.ClickAsync(new()
+            {
+                Force = true
+            }).GetAwaiter().GetResult();
             var warning = page.GetByText("אחד או יותר מפרטי ההזדהות שמסרת שגויים. ניתן לנסות שוב");
+            
+
+            //var warning = page.GetByText("יש להקליד פרטים בכל השדות");
             Assert.IsTrue(warning.IsVisibleAsync().Result);
             Assert.IsTrue(page.Url.Equals("https://hb2.bankleumi.co.il/eBanking/SO/SPA.aspx#/hpsummary"));
         }
