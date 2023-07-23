@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NewsLetter\NewsLetter.csproj" />
+    <ProjectReference Include="..\ScrapBankAccount\ScrapBankAccount.csproj" />
   </ItemGroup>
 
 </Project>
