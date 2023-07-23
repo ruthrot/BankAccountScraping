@@ -11,39 +11,40 @@ namespace TestProject1
         }
 
         [Test]
-        public async Task TestLogin()
+        public async Task TestLoginAsynch()
         {
             string USER_NAME = "5555555";
             string PASSWORD = "666666";
 
-            var pw = Playwright.CreateAsync().Result;
+            var pw = await Playwright.CreateAsync();
             var browser = await pw.Chromium.LaunchAsync();
             var page = await browser.NewPageAsync();
             var resp = await page.GotoAsync("https://www.leumi.co.il/");
-            
+
             var formButton = page.Locator("text=כניסה לחשבונך");
-             formButton.ClickAsync().GetAwaiter().GetResult();
+            await formButton.ClickAsync();
             Assert.IsTrue(page.Url.StartsWith("https://hb2.bankleumi.co.il/staticcontent/gate-keeper/"));
 
             var form = page.GetByRole(AriaRole.Form);
             var userName = page.GetByPlaceholder("שם משתמש");
-            userName.FillAsync(USER_NAME).GetAwaiter().GetResult();
-            Assert.AreEqual(userName.InputValueAsync().Result, USER_NAME);
+            await userName.FillAsync(USER_NAME);
+            string userNameText = await userName.InputValueAsync();
+            Assert.AreEqual(userNameText, USER_NAME);
 
             var password = page.GetByPlaceholder("סיסמה");
-            password.FillAsync(PASSWORD).GetAwaiter().GetResult();
-            Assert.AreEqual(password.InputValueAsync().Result, PASSWORD);
+            await password.FillAsync(PASSWORD);
+            Assert.AreEqual(await password.InputValueAsync(), PASSWORD);
 
             var button = page.Locator("text=כניסה לחשבון");
-             button.ClickAsync(new()
+            await button.ClickAsync(new()
             {
                 Force = true
-            }).GetAwaiter().GetResult();
+            });
             var warning = page.GetByText("אחד או יותר מפרטי ההזדהות שמסרת שגויים. ניתן לנסות שוב");
-            
 
-            //var warning = page.GetByText("יש להקליד פרטים בכל השדות");
-            Assert.IsTrue(warning.IsVisibleAsync().Result);
+            bool isVisible =  warning.IsVisibleAsync().Result;
+
+            Assert.IsTrue(isVisible);
             Assert.IsTrue(page.Url.Equals("https://hb2.bankleumi.co.il/eBanking/SO/SPA.aspx#/hpsummary"));
         }
     }

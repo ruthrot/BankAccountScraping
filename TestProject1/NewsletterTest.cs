@@ -19,7 +19,7 @@ namespace TestPlayWright
         public async Task TestNewsLetter()
         {
             NewsLetterBL newsLetterBL = new NewsLetterBL();
-            newsLetterBL.Execute().GetAwaiter().GetResult();
+            await newsLetterBL.ExecuteAsync();
         }
     }
   

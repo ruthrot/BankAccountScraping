@@ -13,23 +13,23 @@ namespace NewsLetter.BL
 {
     public class NewsLetterBL
     {
-        public async Task Execute()
+        public async Task ExecuteAsync()
         {
             List<ItemModel> news = new List<ItemModel>();
 
-            var pw = Playwright.CreateAsync().Result;
+            var pw = await Playwright.CreateAsync();
             var browser = await pw.Chromium.LaunchAsync();
             var page = await browser.NewPageAsync();
             var resp = await page.GotoAsync("https://www.93fm.co.il/");
 
-            IReadOnlyList<ILocator> headers = page.Locator("id=timeline-infinite-scroll").GetByRole(AriaRole.Article).AllAsync().Result;
+            IReadOnlyList<ILocator> headers = await page.Locator("id=timeline-infinite-scroll").GetByRole(AriaRole.Article).AllAsync();
             foreach (ILocator item in headers)
             {
                 news.Add(new ItemModel()
                 {
-                    Date = item.Locator("css=date").IsVisibleAsync().Result ? item.Locator("css=date").InnerHTMLAsync().Result : DateTime.Now.ToLongDateString(),
-                    Author = item.Locator("css=author").IsVisibleAsync().Result ? item.Locator("css=author").InnerHTMLAsync().Result : "",
-                    Excerpt = item.GetByRole(AriaRole.Paragraph).IsVisibleAsync().Result ? item.GetByRole(AriaRole.Paragraph).InnerHTMLAsync().Result : ""
+                    Date = await item.Locator("css=date").IsVisibleAsync() ? item.Locator("css=date").InnerHTMLAsync().Result : DateTime.Now.ToLongDateString(),
+                    Author = await item.Locator("css=author").IsVisibleAsync() ? await item.Locator("css=author").InnerHTMLAsync() : "",
+                    Excerpt = await item.GetByRole(AriaRole.Paragraph).IsVisibleAsync() ? await item.GetByRole(AriaRole.Paragraph).InnerHTMLAsync() : ""
                 });
             }
 
